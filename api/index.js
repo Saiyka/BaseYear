@@ -1,4 +1,6 @@
-xport default async function handler(req, res) {
+import fetch from "node-fetch"; // tambahkan ini di paling atas
+
+export default async function handler(req, res) {
   try {
     // Ganti username target disini
     const username = "dwr";
@@ -14,13 +16,11 @@ xport default async function handler(req, res) {
       }
     );
 
-    // Cek jika response error
     if (!response.ok) {
       console.error("Neynar API response error:", response.status);
       return res.status(response.status).send("Error fetching data from Neynar API");
     }
 
-    // Ambil data JSON
     const data = await response.json();
     const user = data.result.user;
 
@@ -28,14 +28,12 @@ xport default async function handler(req, res) {
     const following = user.following_count;
     const casts = user.cast_count;
 
-    // Kirim HTML untuk Farcaster Frame
     res.status(200).send(`
 <!DOCTYPE html>
 <html>
 <head>
   <title>Farcaster Stats</title>
 
-  <!-- Farcaster Frame Metadata -->
   <meta property="fc:frame" content="vNext" />
   <meta property="fc:frame:image" content="https://placehold.co/600x400?text=${username}%0AFollowers:+${followers}%0AFollowing:+${following}%0ACasts:+${casts}" />
   <meta property="fc:frame:button:1" content="Chat" />
